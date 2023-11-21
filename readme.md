@@ -2,6 +2,7 @@
 
 ## General
 - Non-alphabetic characters are ignored unless otherwise specified
+- Only the last punctuation character is recognized
 - Line numbering starts from index 0
 - Variables are indicated by words in the poem
     - If the variable is indicated by just one word, the targeted variable is the sum of the indicator word's character values from 1 to 26 modulo the line number of the line in which the indicating word is placed.
@@ -21,18 +22,28 @@
     - That is, they are not included in the indication of variables or values.
     - If they are at the beginning of a line, the line is treated as starting from the second word.
     - Each time an auxilary verb is encountered, print a space.
-    - Each time a conjunction is encountered, print a linebreak.
+    - Each time a conjunction is encountered, print a linebreak. 
 
 ## Line operations
+The length is counted after stripping non-alphabetic characters from the line.
+    - eg. "1, 2, 3" has length 0
+    - eg. "This is a 4-word-line" is viewed as 4 words, as "3-word-line" is one singular element
+### lines of length = 0: special action depends on the ending punctuation
+- '?': generate a random value between 0 and 1024, then assign to the last created variable
+    - if there is no last variable, the value is printed directly
+- '!': exit program unconditionally
+- the rest are ignored, but this line still factors into the line count
 ### lines of length = 1: declare a variable
 - The variable is addressed as the poem line number at which it is created, starting with index 0
 - The initialization value is the sum of its character values from 1 to 26. 
 - If capitalized, the variable is negative. If the line ends in '.', the character values shift to range from 0 to 25 so a/A = 0 instead
     - eg. "doom" on line 2 is equivalent to `var2 = 47`
     - eg. "Doom." on line 2 is equivalent to `var2 = -43`
-### lines of length = 2: output a variable
+### lines of length = 2: output a variable, or generate a random value
 - A capitalized first word outputs the variable indicated by the second word, modulo 26, as a char. The sign value is ignored.
 - A lowercase first word outputs the variable indicated by the second word as an integer.
+- If the line ends in a question mark, generate a random value between 0 and 1024.
+    - assign the value to the variable indicated by the two words
 ### lines of length >= 3 are operations
 Function of lines are determined by the POS of their first word
 - Nouns indicate mathematical operations. Two operands only; the result is assigned to the first operand
