@@ -1,6 +1,7 @@
 # Syntactic Rules for Verbosity
 
 ## General
+- All printing outputs do not automatically have a line break
 - Non-alphabetic characters are ignored unless otherwise specified
 - Only the last punctuation character is recognized
 - Line numbering starts from index 0
@@ -18,11 +19,12 @@
     - if/else
         - if (var > 0 or var > var) goto, else goto
         - if (var > 0 or var > var) execute, else execute
-- Auxilary verbs and conjunctions are special print characters and are ignored in other processing.
-    - That is, they are not included in the indication of variables or values.
-    - If they are at the beginning of a line, the line is treated as starting from the second word.
-    - Each time an auxilary verb is encountered, print a space.
-    - Each time a conjunction is encountered, print a linebreak. 
+- Auxilary verbs and conjunctions are special print characters and are ignored if in the beginning of a line.
+    - The line is treated as starting from the first non-auxilary, conjunction, determiner, or adposition word.
+    - At most once per line, if an auxilary verb is encountered, print a space. This is done before any outputs from the line itself.
+    - For each line, if the last word is a conjunction, print a linebreak. This is done after any outputs from the line itself. This is invalid if ther.e are punctuation marks past the last word
+- - Determiners(articles, quantifiers, etc.) and adpositions (in, to, etc.) are ignored when at the beginning of a line.
+    - The line is treated as starting from the first non-auxilary, conjunction, determiner, or adposition word.
 
 ## Line operations
 The length is counted after stripping non-alphabetic characters from the line.
@@ -56,8 +58,8 @@ Function of lines are determined by the POS of their first word
             - the second L/2 words indicate the second variable
     - if the line has an odd number of words, the second operand is read as a integer
         - for a line with length L+1:
-            - the first L/2 words form the first variable
-            - the second L/2 words form the integer
+            - the first (L+1)/2 words (ceiling first half) form the first variable
+            - the second (L+1)/2 words form the integer
             - the integer is the sum of the words' character values from 1 to 26, then divided by L/2
 - Adverbs indicate goto
     - jump to the line indicated by the sum of the words' character values modulo the number of lines in the poem
@@ -80,4 +82,5 @@ Function of lines are determined by the POS of their first word
     - the next line is an else clause if the statement ends in a period
         - the clause is parsed as any other statement
 - Opening words with other POS tags are ignored
-
+    - the whole line is discarded in computation, but still counts towards the line count
+    - these lines cannot be jumped to
