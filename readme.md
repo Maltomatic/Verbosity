@@ -19,6 +19,7 @@
     - if/else
         - if (var > 0 or var > var) goto, else goto
         - if (var > 0 or var > var) execute, else execute
+        - directly nested if statements are not supported, but you can jump to another if statement after evaluation
 - Auxilary verbs and conjunctions are special print characters and are ignored if in the beginning of a line.
     - The line is treated as starting from the first non-auxilary, conjunction, determiner, or adposition word.
     - At most once per line, if an auxilary verb is encountered, print a space. This is done before any outputs from the line itself.
@@ -64,23 +65,25 @@ Function of lines are determined by the POS of their first word
 - Adverbs indicate goto
     - jump to the line indicated by the sum of the words' character values modulo the number of lines in the poem
     - you cannot jump to a variable declaration
+    - jumping to an "if" statement does not circumvent conditional evaluation, but jumping to and "else" statement enforces execution of the "else" without conditional evaluation
 - Verbs indicate if/else: goto statements
-    - jump if the variable indicated by the first two words is greater than 0, if the sentence is indented by >4 spaces
+    - jump if the variable indicated by the first two words is greater than 0, if the sentence is indented by any number of tabs or >4 spaces
     - jump if the variable indicated by the first word is greater than the variable indicated by the second word, if the sentence is not indented
     - the next line is an else clause if the statement ends in a period
-        - the clause is parsed as any other statement
+        - execute the next line as any statement, unless it is an if statement, in which case the statement is evaluated in the same way as an adverb jump statement
+        - the else line counts towards the number of lines in the poem
     - if the comparison is true, the goto method is determined by the POS of the third word
-        - if it is an adverb, then the remainder of the line starting from the adverb is parsed as an adverb goto statement
+        - if it is an adverb, then the remainder of the line starting from and including the adverb is parsed as an adverb goto statement
         - otherwise, jump to the line of the value of the variable indicated by the remaining words
-            - if there is no such line, the program proceeds directly skipping the if (and else, if any) statement(s)
-    - if it is not true, continue from the next line
-- Adjectives indicate if/else: execute statements
-    - execute the remainder of the statement if the variable indicated by the first two words is greater than 0, if the sentence is indented by >4 spaces
-    - execute if the variable indicated by the first word is greater than the variable indicated by the second word, if the sentence is not indented
-    - execution excludes the first two words
-        - that is, determination of action starts from the third word in the line, and computation of word/char length starts from the third word in the line to the end of the line 
+- Adjectives indicate if/else: goto statements that are the inverse of verb statements
+    - jump if the variable indicated by the first two words is less than or equal to 0, if the sentence is indented by any number of tabs or >4 spaces
+    - jump if the variable indicated by the first word is less than or equal to the variable indicated by the second word, if the sentence is not indented
     - the next line is an else clause if the statement ends in a period
-        - the clause is parsed as any other statement
+        - execute the next line as any statement, unless it is an if statement, in which case the statement is evaluated in the same way as an adverb jump statement
+        - the else line counts towards the number of lines in the poem
+    - if the comparison is true, the goto method is determined by the POS of the third word
+        - if it is a verb, then the remainder of the line starting from and including the verb is parsed as an adverb goto statement
+        - otherwise, jump to the line of the value of the variable indicated by the remaining words
 - Opening words with other POS tags are ignored
     - the whole line is discarded in computation, but still counts towards the line count
-    - these lines cannot be jumped to
+    - these lines can be jumpeed to, but still do nothing

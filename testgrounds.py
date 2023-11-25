@@ -55,8 +55,9 @@ def poem():
         goto .repeat
     else:
         goto .negs
-        label . exiting
+    label . exiting
         print("And in an else statement too")
+    print("This is the normal exit")
     return
 
 poem()
