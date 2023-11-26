@@ -43,23 +43,24 @@ def noun_parse_math(ending, cleaned, linecount):
     len_op1 = 0
     op1 = None
     op2 = None
-    if(len(cleaned) % 2):
+    ln_split = cleaned.split()
+    if(len(ln_split) % 2):
         # var op int
-        len_op1 = len(cleaned)//2 + 1
-        op1 = find_var_tag(" ".join(cleaned.split()[0:len_op1]), linecount)
-        op2 = summation(" ".join(cleaned.split()[len_op1:]))
+        len_op1 = len(ln_split)//2 + 1
+        op1 = find_var_tag(" ".join(ln_split[0:len_op1]), linecount)
+        op2 = summation(" ".join(ln_split[len_op1:]))
     else:
         # var op var
-        len_op1 = len(cleaned)/2
-        op1 = find_var_tag(" ".join(cleaned.split()[0:len_op1]), linecount)
-        op2 = find_var_tag(" ".join(cleaned.split()[len_op1:]), linecount)
+        len_op1 = len(ln_split)//2
+        op1 = find_var_tag(" ".join(ln_split[0:len_op1]), linecount)
+        op2 = find_var_tag(" ".join(ln_split[len_op1:]), linecount)
     return (f"{op1} {op} {op2}")
         
 def goto_catcher(line, cmd):
-    return f"try:\n\texec({cmd})\nexcept:\n\tprint('Bad jump at line:\n\t {line}\nExiting program...')\n\texit()"
+    return f"try:\n\t\texec({cmd})\n\texcept:\n\t\tprint('Bad jump at line:\\n\\t {line.strip()}\\nExiting program...')\n\t\texit()\n"
 
 def add_tag(linecnt, in_else):
-    poem_code.write(f"label .line{linecnt}\n")
+    poem_code.write(f"label .line{linecnt}\n\t")
     if(in_else):
         poem_code.write("\t")
         in_else = False
@@ -74,9 +75,16 @@ poem_code.write("import random\n")
 lastvar = "-1"
 linecnt = -1
 in_else = False
+poem_code.write("@with_goto\ndef main():\n")
 for line in lines:
+    poem_code.write(f"\t\t# source: {line}")
+    if(line[-1] != "\n"):
+        poem_code.write("\n")
     src_l = line
     doc = nlp(line)
+    poem_code.write("\t\t#")
+    poem_code.write(f"{[(w.text, w.pos_, w.tag_) for w in doc]}")
+    poem_code.write("\n\t")
     p_space = False
     p_lbr = False
     for w in doc:
@@ -91,8 +99,9 @@ for line in lines:
             break
         doc = doc[1:]
         line = line[1:]
+    line
     if(p_space):
-        poem_code.write("print(' ', end = '')")
+        poem_code.write("print(' ', end = '')\n\t")
     tmp_l = ''.join(filter(lambda x: x.isalpha() or x.isspace(), line))
     line_length = len(tmp_l.split())
     linecnt += 1
@@ -125,11 +134,11 @@ for line in lines:
     else: # length >= 3
         if(doc[0].pos_ in ["NOUN", "PRON", "PROPN"]): # nouns for math
             add_tag(linecnt, in_else)
-            cmd = noun_parse_math(line[-1], tmp_l, linecnt)
+            cmd = noun_parse_math(line.strip()[-1], tmp_l, linecnt)
             poem_code.write(f"{cmd}\n")
         elif(doc[0].pos_ == "ADV" or ((doc[0].pos_ == "VERB" or doc[0].pos_ == "ADJ") and in_else == True)): #adverbs for goto
             add_tag(linecnt, in_else)
-            cmd = f"goto .line{summation(line)%total_ln}\n"
+            cmd = f"goto .line{summation(line)%total_ln}"
             poem_code.write(goto_catcher(line, cmd))
         elif(doc[0].pos_ == "VERB" and in_else == False): # verbs for if/else
             add_tag(linecnt, in_else)
@@ -138,16 +147,16 @@ for line in lines:
             rem = ' '.join(ln[2:])
             if(src_l[0:4] == "    " or src_l[0] == "\t"):
                 if(doc[2].pos_ == "ADV"):
-                    poem_code.write(f" if {find_var_tag(indicator, linecnt)} > 0:\n\tgoto .line{summation(rem)%total_ln}\n")
+                    poem_code.write(f" if {find_var_tag(indicator, linecnt)} > 0:\n\t\tgoto .line{summation(rem)%total_ln}\n")
                 else:
                     dest = find_var_tag(rem, linecnt)
-                    poem_code.write(f" if {find_var_tag(indicator, linecnt)} > 0:\n\texec(f'goto .line\u007b{dest}\u007d')\n")
+                    poem_code.write(f" if {find_var_tag(indicator, linecnt)} > 0:\n\t\texec(f'goto .line\u007b{dest}\u007d')\n")
             else:
                 if(doc[2].pos_ == "ADV"):
-                    poem_code.write(f" if {find_var_tag(ln[0], linecnt)} > {find_var_tag(ln[1], linecnt)}:\n\tgoto .line{summation(rem)%total_ln}\n")
+                    poem_code.write(f" if {find_var_tag(ln[0], linecnt)} > {find_var_tag(ln[1], linecnt)}:\n\t\tgoto .line{summation(rem)%total_ln}\n")
                 else:
                     dest = find_var_tag(rem, linecnt)
-                    poem_code.write(f" if {find_var_tag(ln[0], linecnt)} > {find_var_tag(ln[1], linecnt)}:\n\texec(f'goto .line\u007b{dest}\u007d')\n")
+                    poem_code.write(f" if {find_var_tag(ln[0], linecnt)} > {find_var_tag(ln[1], linecnt)}:\n\t\texec(f'goto .line\u007b{dest}\u007d')\n")
             if(line.strip()[-1] == "."):
                 # write else clause
                 in_else = True
@@ -159,25 +168,25 @@ for line in lines:
             rem = ' '.join(ln[2:])
             if(src_l[0:4] == "    " or src_l[0] == "\t"):
                 if(doc[2].pos_ == "VERB"):
-                    poem_code.write(f" if {find_var_tag(indicator, linecnt)} <= 0:\n\tgoto .line{summation(rem)%total_ln}\n")
+                    poem_code.write(f" if {find_var_tag(indicator, linecnt)} <= 0:\n\t\tgoto .line{summation(rem)%total_ln}\n")
                 else:
                     dest = find_var_tag(rem, linecnt)
-                    poem_code.write(f" if {find_var_tag(indicator, linecnt)} <= 0:\n\texec(f'goto .line\u007b{dest}\u007d')\n")
+                    poem_code.write(f" if {find_var_tag(indicator, linecnt)} <= 0:\n\t\texec(f'goto .line\u007b{dest}\u007d')\n")
             else:
                 if(doc[2].pos_ == "VERB"):
-                    poem_code.write(f" if {find_var_tag(ln[0], linecnt)} <= {find_var_tag(ln[1], linecnt)}:\n\tgoto .line{summation(rem)%total_ln}\n")
+                    poem_code.write(f" if {find_var_tag(ln[0], linecnt)} <= {find_var_tag(ln[1], linecnt)}:\n\t\tgoto .line{summation(rem)%total_ln}\n")
                 else:
                     dest = find_var_tag(rem, linecnt)
-                    poem_code.write(f" if {find_var_tag(ln[0], linecnt)} <= {find_var_tag(ln[1], linecnt)}:\n\texec(f'goto .line\u007b{dest}\u007d')\n")
+                    poem_code.write(f" if {find_var_tag(ln[0], linecnt)} <= {find_var_tag(ln[1], linecnt)}:\n\t\texec(f'goto .line\u007b{dest}\u007d')\n")
             if(line.strip()[-1] == "."):
                 # write else clause
                 in_else = True
                 poem_code.write("else:\n\t")
         else:
             add_tag(linecnt, in_else)
-            poem_code.write("pass")
+            poem_code.write("pass\n")
     
     if(p_lbr):
-        poem_code.write("print('\n', end = '')")
+        poem_code.write("print('\n', end = '')\n\t")
 
-poem_code.write("exit()")
+poem_code.write("main()")
