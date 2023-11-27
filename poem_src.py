@@ -2,41 +2,68 @@ from goto import with_goto
 import random
 @with_goto
 def main():
-		# source: Death.
-		#[('Death', 'NOUN', 'NN'), ('.', 'PUNCT', '.'), ('\n', 'SPACE', '_SP')]
-	var0 = -38
-		# source: That unavoidable monstrosity.
-		#[('That', 'DET', 'DT'), ('unavoidable', 'ADJ', 'JJ'), ('monstrosity', 'NOUN', 'NN'), ('.', 'PUNCT', '.'), ('\n', 'SPACE', '_SP')]
+	# source: Stay!
+	# initial POS: [('Stay', 'VERB', 'VB'), ('!', 'PUNCT', '.'), ('\n', 'SPACE', '_SP')]
+	# parsed: Stay
+	# parsed POS: [('Stay', 'VERB', 'VB')]
+	var0 = -65
+
+	# source: My dear, please, please
+	# initial POS: [('My', 'PRON', 'PRP$'), ('dear', 'ADJ', 'JJ'), (',', 'PUNCT', ','), ('please', 'INTJ', 'UH'), (',', 'PUNCT', ','), ('please', 'INTJ', 'UH'), ('\n', 'SPACE', '_SP')]
+	# parsed: My dear please please
+	# parsed POS: [('My', 'PRON', 'PRP$'), ('dear', 'ADJ', 'JJ'), ('please', 'INTJ', 'UH'), ('please', 'INTJ', 'UH')]
 	label .line1
-	pass
-		# source: Life.
-		#[('Life', 'NOUN', 'NN'), ('.', 'PUNCT', '.'), ('\n', 'SPACE', '_SP')]
-	var2 = -32
-		# source: That which lends a rope into the bottomless abyss.
-		#[('That', 'PRON', 'DT'), ('which', 'PRON', 'WDT'), ('lends', 'VERB', 'VBZ'), ('a', 'DET', 'DT'), ('rope', 'NOUN', 'NN'), ('into', 'ADP', 'IN'), ('the', 'DET', 'DT'), ('bottomless', 'ADJ', 'JJ'), ('abyss', 'PROPN', 'NNP'), ('.', 'PUNCT', '.'), ('\n', 'SPACE', '_SP')]
+	var0 = var0
+
+	# source: Please.
+	# initial POS: [('Please', 'INTJ', 'UH'), ('.', 'PUNCT', '.'), ('\n', 'SPACE', '_SP')]
+	# parsed: Please
+	# parsed POS: [('Please', 'INTJ', 'UH')]
+	var2 = -52
+
+	# source:     Mercy on my soul, I plead
+	# initial POS: [('    ', 'SPACE', '_SP'), ('Mercy', 'PROPN', 'NNP'), ('on', 'ADP', 'IN'), ('my', 'PRON', 'PRP$'), ('soul', 'NOUN', 'NN'), (',', 'PUNCT', ','), ('I', 'PRON', 'PRP'), ('plead', 'VERB', 'VBP'), ('\n', 'SPACE', '_SP')]
+	# parsed: Mercy on my soul I plead
+	# parsed POS: [('Mercy', 'PROPN', 'NNP'), ('on', 'ADP', 'IN'), ('my', 'PRON', 'PRP$'), ('soul', 'NOUN', 'NN'), ('I', 'PRON', 'PRP'), ('plead', 'VERB', 'VBP')]
 	label .line3
-	var2 -= 297
-		# source: 1, 2, 3?
-		#[('1', 'NUM', 'CD'), (',', 'PUNCT', ','), ('2', 'NUM', 'CD'), (',', 'PUNCT', ','), ('3', 'NUM', 'CD'), ('?', 'NOUN', 'NN'), ('\n', 'SPACE', '_SP')]
+	var2 = var2
+
+	# source: I would've gone to do -- anything!
+	# initial POS: [('I', 'PRON', 'PRP'), ('would', 'AUX', 'MD'), ("'ve", 'AUX', 'VB'), ('gone', 'VERB', 'VBN'), ('to', 'PART', 'TO'), ('do', 'VERB', 'VB'), ('--', 'PUNCT', ':'), ('anything', 'PRON', 'NN'), ('!', 'PUNCT', '.'), ('\n', 'SPACE', '_SP')]
+	# parsed: I wouldve gone to do  anything
+	# parsed POS: [('I', 'PRON', 'PRP'), ('would', 'AUX', 'MD'), ('gone', 'VERB', 'VBN'), ('to', 'PART', 'TO'), ('do', 'VERB', 'VB'), ('anything', 'PRON', 'NN')]
+	print(' ', end = '')
 	label .line4
-			# source: Quickly, run.
-		#[('Quickly', 'ADV', 'RB'), (',', 'PUNCT', ','), ('run', 'VERB', 'VBN'), ('.', 'PUNCT', '.'), ('\n', 'SPACE', '_SP')]
+	var3 *= var1
+
+	# source: Anything you'd've said
+	# initial POS: [('Anything', 'PRON', 'NN'), ('you', 'PRON', 'PRP'), ("'d", 'AUX', 'MD'), ("'ve", 'AUX', 'VB'), ('said', 'VERB', 'VBN'), ('\n', 'SPACE', '_SP')]
+	# parsed: Anything youdve said
+	# parsed POS: [('Anything', 'PRON', 'NN'), ('you', 'PRON', 'PRP'), ('said', 'VERB', 'VBN')]
+	print(' ', end = '')
 	label .line5
-	print(ord(var3), end = '')
-		# source:     One flees as time flows unendingly
-		#[('    ', 'SPACE', '_SP'), ('One', 'NUM', 'CD'), ('flees', 'NOUN', 'NNS'), ('as', 'SCONJ', 'IN'), ('time', 'NOUN', 'NN'), ('flows', 'VERB', 'VBZ'), ('unendingly', 'ADV', 'RB'), ('\n', 'SPACE', '_SP')]
+	var3 = 44.0
+
+	# source: Should you have told me
+	# initial POS: [('Should', 'AUX', 'MD'), ('you', 'PRON', 'PRP'), ('have', 'AUX', 'VB'), ('told', 'VERB', 'VBN'), ('me', 'PRON', 'PRP'), ('\n', 'SPACE', '_SP')]
+	# parsed: you have told me
+	# parsed POS: [('you', 'PRON', 'PRP'), ('have', 'AUX', 'VB'), ('told', 'VERB', 'VBN'), ('me', 'PRON', 'PRP')]
+	print(' ', end = '')
 	label .line6
-	pass
-		# source: Flee, flee
-		#[('Flee', 'PROPN', 'NNP'), (',', 'PUNCT', ','), ('flee', 'PROPN', 'NNP'), ('\n', 'SPACE', '_SP')]
-	label .line7
-	print(ord(var0), end = '')
-		# source: Merrily we run as we do.
-		#[('Merrily', 'ADV', 'RB'), ('we', 'PRON', 'PRP'), ('run', 'VERB', 'VBP'), ('as', 'SCONJ', 'IN'), ('we', 'PRON', 'PRP'), ('do', 'VERB', 'VBP'), ('.', 'PUNCT', '.')]
+	var3 = var3
+
+	# source: And said
+	# initial POS: [('And', 'CCONJ', 'CC'), ('said', 'VERB', 'VBD'), ('\n', 'SPACE', '_SP')]
+	# parsed: said
+	# parsed POS: [('said', 'VERB', 'VBD')]
+	var7 = 33
+
+	# source: You'd stay
+	# initial POS: [('You', 'PRON', 'PRP'), ("'d", 'AUX', 'MD'), ('stay', 'VERB', 'VB'), ('\n', 'SPACE', '_SP')]
+	# parsed: Youd stay
+	# parsed POS: [('You', 'PRON', 'PRP'), ('stay', 'VERB', 'VB')]
+	print(' ', end = '')
 	label .line8
-	try:
-		exec(goto .line5)
-	except:
-		print('Bad jump at line:\n\t Merrily we run as we do.\nExiting program...')
-		exit()
+	print(var1, end = '')
+
 main()
