@@ -21,10 +21,10 @@
         - if (var > 0 or var > var) goto, else goto
         - if (var > 0 or var > var) execute, else execute
         - directly nested if statements are not supported, but you can jump to another if statement after evaluation
-- Auxilary verbs and conjunctions are special print characters and are ignored if in the beginning of a line.
+- Conjunctions are special print characters and are ignored if in the beginning of a line.
     - The line is treated as starting from the first non-auxilary, conjunction, determiner, or adposition word.
-    - At most once per line, if an auxilary verb is encountered, print a space. This is done before any outputs from the line itself.
-    - For each line, if the last word is a conjunction, print a linebreak. This is done after any outputs from the line itself. This is invalid if there are punctuation marks past the last word
+    - For each line, if the second to last word is a conjunction, print a linebreak. This is done before any outputs from the line itself.
+    - For each line, if the last word is a conjunction, print a space. This is done after any outputs from the line itself. This is invalid if there are punctuation marks past the last word
 - Determiners(articles, quantifiers, etc.) and adpositions (in, to, etc.) are ignored when at the beginning of a line.
     - The line is treated as starting from the first non-auxilary, conjunction, determiner, or adposition word.
 

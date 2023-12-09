@@ -100,11 +100,10 @@ for line in lines:
     p_space = False
     p_lbr = False
     line = line.split()
-    for w in src_doc:
-        if(w.pos_ == "AUX"):
-            p_space = True
-    if(src_doc[-1].pos_ == "CCONJ" or src_doc[-1].pos_ == "SCONJ"):
+    if(src_doc[-2].pos_ == "CCONJ" or src_doc[-2].pos_ == "SCONJ"):
             p_lbr = True
+    if(src_doc[-1].pos_ == "CCONJ" or src_doc[-1].pos_ == "SCONJ"):
+            p_space = True
     while(1):
         if not (len(line) > 1 and (src_doc[0].pos_ == "AUX" or src_doc[0].pos_ == "CCONJ" or src_doc[0].pos_ == "SCONJ" or src_doc[0].pos_ == "DET" or src_doc[0].pos_ == "ADP")):
             break
