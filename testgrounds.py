@@ -1,47 +1,49 @@
 
-
 def summation(line):
     line = ''.join(filter(lambda x: x.isalpha() or x.isspace(), line.strip()))
     l = len(line.split())
     
     if(l > 1):
         line = line.split()
-        return sum((ord(wd[0].lower()) - ord('a') + 1) for wd in line)
+        val = sum((ord(wd[0].lower()) - ord('a') + 1) for wd in line)
+        val *= l
+        return val
     else:
         return (sum(bytearray(line.lower(), encoding='utf-8')) - (ord('a')-1)*len(line))
 
-st = input()
-print(summation(st))
-# # # def find_var_tag(word, linecount):
-# # #     return f"var{summation(word)%linecount}"
+def find_var_tag(word, linecount):
+    return f"var{summation(word)%linecount}"
 
-# # # def var_init(word):
-# # #     sign = False
-# # #     shift = False
-# # #     if(word[0].isupper()):
-# # #         sign = True
-# # #     if(word[-1] == '.'):
-# # #         shift = True
-# # #     wd = (''.join(filter(str.isalpha, word)))
-# # #     if(shift):
-# # #         wd = sum(bytearray(wd.lower(), encoding='utf-8')) - (ord('a'))*len(wd)
-# # #     else:
-# # #         wd = sum(bytearray(wd.lower(), encoding='utf-8')) - (ord('a')-1)*len(wd)
-# # #     if(sign):
-# # #         return wd*-1
-# # #     else:
-# # #         return wd
+def var_init(word):
+    sign = True
+    shift = False
+    if(word[0].isupper()):
+        sign = False
+    if(word[-1] == '.'):
+        shift = True
+    wd = (''.join(filter(str.isalpha, word)))
+    if(shift):
+        wd = sum(bytearray(wd.lower(), encoding='utf-8')) - (ord('a'))*len(wd)
+    else:
+        wd = sum(bytearray(wd.lower(), encoding='utf-8')) - (ord('a')-1)*len(wd)
+    if(sign):
+        return wd*-1
+    else:
+        return wd
 
-# # # # test = "Aaaa, ay.   "
-# # # # print(summation(test))
-# # # # print(find_var_tag(test, 100))
-
-# # # # import string
-# # # # s = input()
-# # # # closing = s[-1] if s[-1] in string.punctuation else None
-# # # # s = (''.join(filter(lambda x: x.isalpha() or x.isspace(), s)))
-# # # # print(s)
-# # # # print(len(s.split()))
+while(True):
+    cmd = input("Sum, sum_int, var, or init: ")
+    s = input("Enter string: ")
+    if(cmd == "sum"):
+        print(summation(s))
+    elif(cmd == "sum_int"):
+        s = ''.join(filter(lambda x: x.isalpha(), s.strip()))
+        print(int(summation(s)/((int(input("line word length: "))//2)*2)))
+    elif(cmd == "var"):
+        ln = int(input("Enter line number to test: ").strip())
+        print(find_var_tag(s, ln))
+    elif(cmd == "init"):
+        print(var_init(s))
 
 # from goto import with_goto
 

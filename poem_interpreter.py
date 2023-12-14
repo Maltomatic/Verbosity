@@ -11,7 +11,9 @@ def summation(line):
     
     if(l > 1):
         line = line.split()
-        return sum((ord(wd[0].lower()) - ord('a') + 1) for wd in line)
+        val = sum((ord(wd[0].lower()) - ord('a') + 1) for wd in line)
+        val *= l
+        return val
     else:
         return (sum(bytearray(line.lower(), encoding='utf-8')) - (ord('a')-1)*len(line))
 
@@ -19,10 +21,10 @@ def find_var_tag(word, linecount):
     return f"var{summation(word)%linecount}"
 
 def var_init(word):
-    sign = False
+    sign = True
     shift = False
     if(word[0].isupper()):
-        sign = True
+        sign = False
     if(word[-1] == '.'):
         shift = True
     wd = (''.join(filter(str.isalpha, word)))
@@ -35,23 +37,25 @@ def var_init(word):
     else:
         return wd
 
-def noun_parse_math(ending, cleaned, linecount):
+def noun_parse_math(src, ending, cleaned, linecount):
     op = "*="
+    comma_cnt = src.count(",")
+    period_cnt = src.count(".")
     if(ending in string.punctuation):
-        if(ending == "."):
+        if(ending == ";"):
             op = "-="
-        elif(ending == ","):
+        elif(ending == ":"):
             op = "/="
         elif(ending == "!"):
             op = "*="
         elif(ending == "?"):
             op = "%="
-        elif(ending == ";"):
+        elif(ending == "-"):
             op = "//="
         else:
             op = "="
     else:
-        op = "="
+        op = "+="
     op1 = None
     op2 = None
     ln_split = cleaned.split()
@@ -59,7 +63,7 @@ def noun_parse_math(ending, cleaned, linecount):
     if(len(ln_split) % 2):
         # var op int
         op1 = find_var_tag(" ".join(ln_split[0:len_op1]), linecount)
-        op2 = summation(" ".join(ln_split[len_op1:])) / len_op1
+        op2 = int(summation("".join(ln_split[len_op1:])) // (len_op1*2)) + comma_cnt - period_cnt
     else:
         # var op var
         op1 = find_var_tag(" ".join(ln_split[0:len_op1]), linecount)
@@ -92,18 +96,23 @@ for line in lines:
     if(line[-1] != "\n"):
         poem_code.write("\n")
     src_l = line
-    line.strip()
+    if(line.strip() != ""):
+        line.strip()
+    else:
+        poem_code.write("\tpass\n")
+        linecnt += 1
+        continue
     src_doc = nlp(line)
     poem_code.write("\t# initial POS: ")
     poem_code.write(f"{[(w.text, w.pos_, w.tag_) for w in src_doc]}")
     poem_code.write("\n")
     p_space = False
     p_lbr = False
-    line = line.split()
     if(src_doc[-2].pos_ == "CCONJ" or src_doc[-2].pos_ == "SCONJ"):
             p_lbr = True
     if(src_doc[-1].pos_ == "CCONJ" or src_doc[-1].pos_ == "SCONJ"):
             p_space = True
+    line = line.split()
     while(1):
         if not (len(line) > 1 and (src_doc[0].pos_ == "AUX" or src_doc[0].pos_ == "CCONJ" or src_doc[0].pos_ == "SCONJ" or src_doc[0].pos_ == "DET" or src_doc[0].pos_ == "ADP")):
             break
@@ -154,11 +163,13 @@ for line in lines:
     else: # length >= 3
         if(doc[0].pos_ in ["NOUN", "PRON", "PROPN"]): # nouns for math
             add_tag(linecnt, in_else)
-            cmd = noun_parse_math(line.strip()[-1], tmp_l, linecnt)
+            cmd = noun_parse_math(src_l, line.strip()[-1], tmp_l, linecnt)
             poem_code.write(f"{cmd}\n")
         elif(doc[0].pos_ == "ADV" or ((doc[0].pos_ == "VERB" or doc[0].pos_ == "ADJ") and in_else == True)): #adverbs for goto
             add_tag(linecnt, in_else)
-            cmd = f"goto .line{summation(line)%total_ln}"
+            comma_cnt = src_l.count(",")
+            period_cnt = src_l.count(".")
+            cmd = f"goto .line{summation(line)%total_ln + comma_cnt - period_cnt}"
             poem_code.write(goto_catcher(line, cmd))
         elif(doc[0].pos_ == "VERB" and in_else == False): # verbs for if/else
             add_tag(linecnt, in_else)
@@ -207,7 +218,7 @@ for line in lines:
             poem_code.write("pass\n")
     
     if(p_lbr):
-        poem_code.write("print('\n', end = '')\n\t")
+        poem_code.write("print('\\n', end = '')\n\t")
     poem_code.write("\n")
 
 poem_code.write("main()")

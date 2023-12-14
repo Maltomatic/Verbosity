@@ -32,6 +32,7 @@
 The length is counted after stripping non-alphabetic characters from the line.
     - eg. "1, 2, 3" has length 0
     - eg. "This is a 4-word-line" is viewed as 4 words, as "3-word-line" is one singular element
+    - empty lines factor into line count but do nothing
 ### lines of length = 0: special action depends on the ending punctuation
 - '?': generate a random value between 0 and 1024, then assign to the last created variable
     - if there is no last variable, the value is printed directly
@@ -40,7 +41,7 @@ The length is counted after stripping non-alphabetic characters from the line.
 ### lines of length = 1: declare a variable
 - The variable is addressed as the poem line number at which it is created, starting with index 0
 - The initialization value is the sum of its character values from 1 to 26. 
-- If capitalized, the variable is negative. If the line ends in '.', the character values shift to range from 0 to 25 so a/A = 0 instead
+- If un-capitalized, the variable is negative. If the line ends in '.', the character values shift to range from 0 to 25 so a/A = 0 instead
     - eg. "doom" on line 2 is equivalent to `var2 = 47`
     - eg. "Doom." on line 2 is equivalent to `var2 = -43`
 ### lines of length = 2: output a variable, or generate a random value
@@ -52,7 +53,7 @@ The length is counted after stripping non-alphabetic characters from the line.
 Function of lines are determined by the POS of their first word
 - Nouns indicate mathematical operations. Two operands only; the result is assigned to the first operand
     - the operation is determined by the ending punctuation
-    - '.': subtraction / ',': division / '!': multiplication / '?': modulo / ';': division and rounded down to full number / none: addition
+    - ';': subtraction / ':': division / '!': multiplication / '?': modulo / '-': division and rounded down to full number / none: addition
     - other punctuation marks are viewed as assignment for mathematical operations
     - if the line has an even number of words, the second operand is read as a variable
         - for a line with length L:
@@ -62,9 +63,9 @@ Function of lines are determined by the POS of their first word
         - for a line with length L+1:
             - the first (L-1)/2 words (floor first half) indicate the first variable
             - the second (L+1)/2 words form the integer
-            - the integer is the sum of the words' character values from 1 to 26, then divided by (L-1)/2
+            - the integer is the sum of the words' character values from 1 to 26 divided by (L-1), then rounded down to which the number of commas in the line  is added and the number of periods is subtracted
 - Adverbs indicate goto
-    - jump to the line indicated by the sum of the words' first character's values multiplied by the number of words in the line, modulo the number of lines in the poem
+    - jump to the line indicated by the sum of the words' first character's values multiplied by the number of words in the line, modulo the number of lines in the poem, then adding the number of commas in the line and subtracting the number of periods
     - you cannot jump to a variable declaration
     - jumping to an "if" statement does not circumvent conditional evaluation, but jumping to and "else" statement enforces execution of the "else" without conditional evaluation
 - Verbs indicate if/else: goto statements
