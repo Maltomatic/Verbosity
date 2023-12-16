@@ -5,7 +5,8 @@
 - Contractions do not count towards the number of words in a line, but they affect the character sum
 - Non-alphabetic characters are ignored unless otherwise specified
 - Only the last punctuation character is recognized
-- Line numbering starts from index 0
+- Line numbering starts from index 0, as does the number of lines
+    - esssentially your poem always as -1 lines than what you thought you wrote
 - Variables are indicated by words in the poem
     - If the variable is indicated by just one word, the targeted variable is the sum of the indicator word's character values from 1 to 26 modulo the line number of the line in which the indicating word is placed.
         - eg. "life" on line 3 gets 32%3 = 2, and so indicates the variable declared on line 2
@@ -21,12 +22,12 @@
         - if (var > 0 or var > var) goto, else goto
         - if (var > 0 or var > var) execute, else execute
         - directly nested if statements are not supported, but you can jump to another if statement after evaluation
-- Conjunctions are special print characters and are ignored if in the beginning of a line.
-    - The line is treated as starting from the first non-auxilary, conjunction, determiner, or adposition word.
+- Conjunctions are special print characters.
+    <!-- - The line is treated as starting from the first non-auxilary, conjunction, determiner, or adposition word. -->
     - For each line, if the second to last word is a conjunction, print a linebreak. This is done before any outputs from the line itself.
-    - For each line, if the last word is a conjunction, print a space. This is done after any outputs from the line itself. This is invalid if there are punctuation marks past the last word
-- Determiners(articles, quantifiers, etc.) and adpositions (in, to, etc.) are ignored when at the beginning of a line.
-    - The line is treated as starting from the first non-auxilary, conjunction, determiner, or adposition word.
+    - For each line, if the last word is a conjunction, print a space. This is done after any outputs from the line itself.
+<!-- - Determiners(articles, quantifiers, etc.) and adpositions (in, to, etc.) are ignored when at the beginning of a line, unless the line is single- or double-worded (a variable declaration or print statement).
+    - The line is treated as starting from the first non-determiner, or adposition word. -->
 
 ## Line operations
 The length is counted after stripping non-alphabetic characters from the line.
@@ -41,12 +42,14 @@ The length is counted after stripping non-alphabetic characters from the line.
 ### lines of length = 1: declare a variable
 - The variable is addressed as the poem line number at which it is created, starting with index 0
 - The initialization value is the sum of its character values from 1 to 26. 
-- If un-capitalized, the variable is negative. If the line ends in '.', the character values shift to range from 0 to 25 so a/A = 0 instead
-    - eg. "doom" on line 2 is equivalent to `var2 = 47`
-    - eg. "Doom." on line 2 is equivalent to `var2 = -43`
+- If the line ends in a comma, the variable is negative. If the line ends in '.', the character values shift to range from 0 to 25 so a/A = 0 instead
+    - eg. "Doom," on line 2 is equivalent to `var2 = -47`
+    - eg. "Doom." on line 2 is equivalent to `var2 = 43`
 ### lines of length = 2: output a variable, or generate a random value
 - A capitalized first word outputs the variable indicated by the second word as a ASCII character. The sign value is ignored, and floats are rounded down.
 - A lowercase first word outputs the variable indicated by the second word as an integer.
+<!-- - If the line ends in a period, a value of 1 is added to the output.
+- If the line ends in an exclamation mark, a value of 1 is subtracted from the output. -->
 - If the line ends in a question mark, generate a random value between 0 and 1024.
     - assign the value to the variable indicated by the two words
 ### lines of length >= 3 are operations
@@ -55,6 +58,8 @@ Function of lines are determined by the POS of their first word
     - the operation is determined by the ending punctuation
     - ';': subtraction / ':': division / '!': multiplication / '?': modulo / '-': division and rounded down to full number / none: addition
     - other punctuation marks are viewed as assignment for mathematical operations
+        - assignment to a previously undeclared variable is valid and can be jumped to, unlike direct declarations
+        - in this case the variable naming follows the assignment statement rather than the line number
     - if the line has an even number of words, the second operand is read as a variable
         - for a line with length L:
             - the first L/2 words indicate the first variable
@@ -63,7 +68,7 @@ Function of lines are determined by the POS of their first word
         - for a line with length L+1:
             - the first (L-1)/2 words (floor first half) indicate the first variable
             - the second (L+1)/2 words form the integer
-            - the integer is the sum of the words' character values from 1 to 26 divided by (L-1), then rounded down to which the number of commas in the line  is added and the number of periods is subtracted
+            - the integer is the sum of the words' character values from 1 to 26 divided by (L-1), then rounded down, to which the number of commas in the line is added and the number of periods is subtracted
 - Adverbs indicate goto
     - jump to the line indicated by the sum of the words' first character's values multiplied by the number of words in the line, modulo the number of lines in the poem, then adding the number of commas in the line and subtracting the number of periods
     - you cannot jump to a variable declaration
@@ -88,4 +93,4 @@ Function of lines are determined by the POS of their first word
         - otherwise, jump to the line of the value of the variable indicated by the remaining words
 - Opening words with other POS tags are ignored
     - the whole line is discarded in computation, but still counts towards the line count
-    - these lines can be jumpeed to, but still do nothing
+    - these lines can be jumped to, but do nothing
